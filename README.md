@@ -75,7 +75,7 @@ I believe in **learning by doing**, experimenting with data, and building small 
 
 <p align="center">
   <!-- Streak Stats -->
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=ai-sumit&theme=radical" alt="GitHub Streak">
+  <img src="https://github-readme-streak-stats.herokuapp.com/?user=sumitaidev&theme=radical" alt="GitHub Streak">
 </p>
 
 
