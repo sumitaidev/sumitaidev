@@ -56,20 +56,34 @@ I believe in **learning by doing**, experimenting with data, and building small 
   <tr>
     <td align="center" width="50%">
       <a href="https://www.csjournal.in">
-        <img src="https://i.ibb.co/3mRXH3zn/image.png" alt="CS Journal Link 1" style="max-width: 100%;" />
+        <img src="https://raw.githubusercontent.com/sumitaidev/sumitaidev/refs/heads/main/asset/project%20images/1.png" alt="CS Journal Link 1" style="max-width: 100%;" />
       </a>
     </td>
     <td align="center" width="50%">
       <a href="https://www.csjournal.in">
-        <img src="https://i.ibb.co/TBp6M82Z/image.png" alt="CS Journal Link 2" style="max-width: 100%;" />
+        <img src="https://raw.githubusercontent.com/sumitaidev/sumitaidev/refs/heads/main/asset/project%20images/2.png" alt="CS Journal Link 2" style="max-width: 100%;" />
       </a>
     </td>
   </tr>
+ <tr>
+    <td align="center" width="50%">
+      <a href="https://www.csjournal.in">
+        <img src="https://raw.githubusercontent.com/sumitaidev/sumitaidev/refs/heads/main/asset/project%20images/3.png" alt="CS Journal Link 1" style="max-width: 100%;" />
+      </a>
+    </td>
+    <td align="center" width="50%">
+      <a href="https://www.csjournal.in">
+        <img src="https://raw.githubusercontent.com/sumitaidev/sumitaidev/refs/heads/main/asset/project%20images/4.png" alt="CS Journal Link 2" style="max-width: 100%;" />
+      </a>
+    </td>
+  </tr>
+ 
+  
 </table>
 
 ---
 <p align="left">
-  <img src="https://raw.githubusercontent.com/ai-sumit/ai-sumit/refs/heads/main/Screenshot%202026-05-22%20180811.png" />
+  <img src="https://raw.githubusercontent.com/sumitaidev/sumitaidev/refs/heads/main/asset/education.png" />
 </p>
 
 ---
