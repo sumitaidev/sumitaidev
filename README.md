@@ -6,8 +6,8 @@
 
 ## Hey there 👋, I'm [Sumit Haldar](https://github.com/sumitaidev)
 
-[![Linkedin](https://img.shields.io/badge/linked-in-369?style=flat-square&logo=linkedin&logoColor=white&color=blue)](https://www.linkedin.com/in/sumit-haldar)
-[![X Badge](https://img.shields.io/badge/-X-000000?style=flat-square&logo=x&logoColor=white)](https://x.com/@sumit_hald88327)
+[![Linkedin](https://img.shields.io/badge/linked-in-369?style=flat-square&logo=linkedin&logoColor=white&color=blue)](https://www.linkedin.com/in/sumitaidev)
+[![X Badge](https://img.shields.io/badge/-X-000000?style=flat-square&logo=x&logoColor=white)](https://x.com/@sumitaidev)
 [![Gmail Badge](https://img.shields.io/badge/-Gmail-EA4335?style=flat-square&logo=Gmail&logoColor=white)](mailto:hello.sumithaldar@gmail.com)
 [<img src="https://i.ibb.co/wFtZ3zmd/image.png" height="20" alt="My Website"/>](https://csjournal.in)
 [<img src="https://raw.githubusercontent.com/sumitaidev/sumitaidev/refs/heads/main/asset/gyanloop.png" height="20" alt="My Website"/>](https://gyanloop.com)
