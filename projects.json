@@ -1,10 +1,10 @@
 [
   {
-    "name": "LeadUnity",
-    "repo": "arifhaxn/lead_unity",
+    "name": "whatsapp-automation",
+    "repo": "sumitaidev/whatsapp-automation",
     "logo": "logo.png",
-    "description": "Leading University's defense setup",
-    "tags": ["Flutter", "Dart", "NextJS"]
+    "description": "whatsapp-automation Leading University's defense setup",
+    "tags": ["HTML", "css", "NextJS"]
   },
   {
     "name": "OnePick",
