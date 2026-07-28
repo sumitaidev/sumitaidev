@@ -1,0 +1,196 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" width="1200" height="600">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0e1a" stop-opacity="1" />
+      <stop offset="50%" stop-color="#0d1528" stop-opacity="1" />
+      <stop offset="100%" stop-color="#0a0e1a" stop-opacity="1" />
+    </linearGradient>
+    <linearGradient id="terminalBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1a1f2e" stop-opacity="0.95" />
+      <stop offset="100%" stop-color="#111624" stop-opacity="0.95" />
+    </linearGradient>
+    <linearGradient id="glowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00d4ff" stop-opacity="0.3" />
+      <stop offset="50%" stop-color="#0066ff" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#00d4ff" stop-opacity="0.3" />
+    </linearGradient>
+    <linearGradient id="btnRed" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff5f56" />
+      <stop offset="100%" stop-color="#e0443e" />
+    </linearGradient>
+    <linearGradient id="btnYellow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffbd2e" />
+      <stop offset="100%" stop-color="#dea123" />
+    </linearGradient>
+    <linearGradient id="btnGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#27c93f" />
+      <stop offset="100%" stop-color="#1a9e31" />
+    </linearGradient>
+    <filter id="neonGlow">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    
+    <!-- FILTER: Black & White (Grayscale) -->
+    <filter id="blackAndWhite">
+      <feColorMatrix type="matrix" values="0.33 0.33 0.33 0 0
+                                           0.33 0.33 0.33 0 0
+                                           0.33 0.33 0.33 0 0
+                                           0    0    0    1 0" />
+    </filter>
+
+    <!-- FILTER: Scan Line Glow -->
+    <filter id="scanGlow">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <clipPath id="terminalClip">
+      <rect x="40" y="40" width="1120" height="520" rx="14" />
+    </clipPath>
+  </defs>
+
+  <style>
+    text { font-family: 'JetBrains Mono', 'Courier New', monospace; }
+    .cursor { animation: blink 1s step-end infinite; }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    .live-pulse { animation: pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 0.2; r: 6; } 50% { opacity: 0.8; r: 14; } }
+    .fade-in { opacity: 0; animation: fadeIn 0.6s ease-out forwards; }
+    .fade-in:nth-child(2) { animation-delay: 0.1s; }
+    .fade-in:nth-child(3) { animation-delay: 0.2s; }
+    .fade-in:nth-child(4) { animation-delay: 0.3s; }
+    .fade-in:nth-child(5) { animation-delay: 0.4s; }
+    .fade-in:nth-child(6) { animation-delay: 0.5s; }
+    .fade-in:nth-child(7) { animation-delay: 0.6s; }
+    .fade-in:nth-child(8) { animation-delay: 0.7s; }
+    .fade-in:nth-child(9) { animation-delay: 0.8s; }
+    .fade-in:nth-child(10) { animation-delay: 0.9s; }
+    .fade-in:nth-child(11) { animation-delay: 1.0s; }
+    .fade-in:nth-child(12) { animation-delay: 1.1s; }
+    .fade-in:nth-child(13) { animation-delay: 1.2s; }
+    .fade-in:nth-child(14) { animation-delay: 1.3s; }
+    .fade-in:nth-child(15) { animation-delay: 1.4s; }
+    @keyframes fadeIn { to { opacity: 1; } }
+    .glow-move { animation: glowShift 6s ease-in-out infinite; }
+    @keyframes glowShift { 0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.2; } 50% { transform: translate(-30%, -40%) scale(1.3); opacity: 0.4; } }
+    
+    /* SCAN ANIMATION */
+    .scan-line { animation: scanDown 4s linear infinite; }
+    @keyframes scanDown {
+      0% { transform: translateY(0px); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(320px); opacity: 0; }
+    }
+  </style>
+
+  <rect width="1200" height="600" fill="url(#bgGrad)" />
+
+  <!-- Animated background glow -->
+  <ellipse cx="400" cy="300" rx="350" ry="280" fill="url(#glowGrad)" class="glow-move" filter="url(#softGlow)" />
+
+  <!-- Terminal Window -->
+  <rect x="40" y="40" width="1120" height="520" rx="14" fill="url(#terminalBg)" stroke="#2a3050" stroke-width="1.5" filter="url(#softGlow)" />
+
+  <!-- Top Bar -->
+  <rect x="40" y="40" width="1120" height="50" rx="14" fill="#1e2436" />
+  <rect x="40" y="64" width="1120" height="26" fill="#1e2436" />
+
+  <!-- Window Buttons -->
+  <circle cx="72" cy="65" r="7" fill="url(#btnRed)" />
+  <circle cx="96" cy="65" r="7" fill="url(#btnYellow)" />
+  <circle cx="120" cy="65" r="7" fill="url(#btnGreen)" />
+
+  <!-- Title -->
+  <text x="600" y="71" text-anchor="middle" fill="#8899bb" font-size="13" font-weight="400">sumit@gyanloop.com ~ % ./profile.sh --scan</text>
+
+  <!-- Left Side - Black & White Photo with Scan Effect -->
+  <g clip-path="url(#terminalClip)">
+    <g transform="translate(100, 120)">
+      
+      <!-- PHOTO FRAME BACKGROUND -->
+      <rect x="20" y="20" width="260" height="260" rx="16" fill="#111624" stroke="#00d4ff" stroke-width="1.5" opacity="0.5" />
+      
+      <!-- YOUR PHOTO - BLACK & WHITE FILTER APPLIED -->
+      <g filter="url(#blackAndWhite)">
+        <image href="https://avatars.githubusercontent.com/u/228170302?v=4" x="20" y="20" width="260" height="260" rx="16" preserveAspectRatio="xMidYMid slice" />
+      </g>
+
+      <!-- SCAN EFFECT OVERLAY -->
+      <!-- Scan Line Glow (Background) -->
+      <rect x="20" y="20" width="260" height="5" fill="#00d4ff" opacity="0.4" class="scan-line" filter="url(#scanGlow)" />
+      <!-- Scan Line Core -->
+      <rect x="20" y="20" width="260" height="2" fill="#ffffff" class="scan-line" filter="url(#neonGlow)" />
+      
+      <!-- Subtle scan grid lines (static) -->
+      <g stroke="#00d4ff" stroke-width="0.5" opacity="0.1">
+        <line x1="20" y1="50" x2="280" y2="50" />
+        <line x1="20" y1="80" x2="280" y2="80" />
+        <line x1="20" y1="110" x2="280" y2="110" />
+        <line x1="20" y1="140" x2="280" y2="140" />
+        <line x1="20" y1="170" x2="280" y2="170" />
+        <line x1="20" y1="200" x2="280" y2="200" />
+        <line x1="20" y1="230" x2="280" y2="230" />
+        <line x1="20" y1="260" x2="280" y2="260" />
+      </g>
+
+      <!-- STATUS TEXT UNDER IMAGE -->
+      <text x="150" y="310" text-anchor="middle" fill="#00d4ff" font-size="12" font-weight="600" filter="url(#neonGlow)">● SCANNING...</text>
+    </g>
+  </g>
+
+  <!-- Right Side - System Info -->
+  <g transform="translate(480, 110)">
+    <text x="0" y="0" fill="#00d4ff" font-size="22" font-weight="700" letter-spacing="2" filter="url(#neonGlow)">SYSTEM.INFO</text>
+    <line x1="0" y1="10" width="380" height="1" stroke="#00d4ff" stroke-width="1" opacity="0.3" />
+
+    <g fill="#c8d0e0" font-size="14" font-weight="400">
+      <text x="0" y="45" class="fade-in"><tspan fill="#667799">Name</tspan><tspan fill="#00d4ff" font-weight="600">            Sumit Haldar</tspan></text>
+      <text x="0" y="75" class="fade-in"><tspan fill="#667799">Role</tspan><tspan fill="#00d4ff" font-weight="600">            AI &amp; Data Science Engineer</tspan></text>
+      <text x="0" y="105" class="fade-in"><tspan fill="#667799">Company</tspan><tspan fill="#00d4ff" font-weight="600">         Founder @ GyanLoop</tspan></text>
+      <text x="0" y="135" class="fade-in"><tspan fill="#667799">Education</tspan><tspan fill="#00d4ff" font-weight="600">       B.Tech AI &amp; Data Science</tspan></text>
+      <text x="0" y="165" class="fade-in"><tspan fill="#667799">Location</tspan><tspan fill="#00d4ff" font-weight="600">        West Bengal, India</tspan></text>
+      <text x="0" y="195" class="fade-in"><tspan fill="#667799">Website</tspan><tspan fill="#00d4ff" font-weight="600">         gyanloop.com</tspan></text>
+      <text x="0" y="225" class="fade-in"><tspan fill="#667799">GitHub</tspan><tspan fill="#00d4ff" font-weight="600">          ai-sumit</tspan></text>
+      <text x="0" y="255" class="fade-in"><tspan fill="#667799">Languages</tspan><tspan fill="#00d4ff" font-weight="600">       Python • Java • JavaScript • C++</tspan></text>
+      <text x="0" y="285" class="fade-in"><tspan fill="#667799">Frontend</tspan><tspan fill="#00d4ff" font-weight="600">        HTML • CSS • React</tspan></text>
+      <text x="0" y="315" class="fade-in"><tspan fill="#667799">Backend</tspan><tspan fill="#00d4ff" font-weight="600">         FastAPI • Flask • Django • Node.js</tspan></text>
+      <text x="0" y="345" class="fade-in"><tspan fill="#667799">Database</tspan><tspan fill="#00d4ff" font-weight="600">        PostgreSQL • MongoDB • MySQL</tspan></text>
+      <text x="0" y="375" class="fade-in"><tspan fill="#667799">AI Stack</tspan><tspan fill="#00d4ff" font-weight="600">        TensorFlow • PyTorch • LangChain • OpenAI API</tspan></text>
+      <text x="0" y="405" class="fade-in"><tspan fill="#667799">Learning</tspan><tspan fill="#00d4ff" font-weight="600">        LLMs • AI Agents • RAG</tspan></text>
+      <text x="0" y="435" class="fade-in"><tspan fill="#667799">Status</tspan><tspan fill="#00d4ff" font-weight="600">          Building AI Products</tspan></text>
+    </g>
+  </g>
+
+  <!-- LIVE Indicator -->
+  <g transform="translate(1080, 70)">
+    <circle cx="0" cy="0" r="8" fill="#00ff88" opacity="0.2" class="live-pulse" />
+    <circle cx="0" cy="0" r="4" fill="#00ff88" filter="url(#neonGlow)" />
+    <text x="14" y="5" fill="#00ff88" font-size="11" font-weight="700" filter="url(#neonGlow)">LIVE</text>
+  </g>
+
+  <!-- Bottom Terminal -->
+  <g transform="translate(60, 495)">
+    <rect x="0" y="0" width="1080" height="45" rx="6" fill="#0d1222" stroke="#1a2444" stroke-width="1" opacity="0.8" />
+    <text x="15" y="28" fill="#667799" font-size="13" font-weight="400">
+      <tspan fill="#00d4ff">&gt;</tspan>
+      <tspan fill="#8899bb"> Building the future with AI.</tspan>
+      <tspan fill="#00d4ff" font-weight="600"> Learn • Build • Share</tspan>
+      <tspan fill="#00d4ff" class="cursor">█</tspan>
+    </text>
+  </g>
+</svg>
