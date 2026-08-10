@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Branch Attendance Portal</title>
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f4f7f6; color: #333; margin: 0; padding: 20px; }
+    .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    h2, h3 { text-align: center; color: #2c3e50; }
+    .form-group { margin-bottom: 15px; }
+    input, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+    button { width: 100%; padding: 10px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; margin-top: 10px;}
+    button:hover { background: #2980b9; }
+    button:disabled { background: #95a5a6; cursor: not-allowed; }
+    button.alt-btn { background: #2ecc71; margin-top: 20px; }
+    button.alt-btn:hover { background: #27ae60; }
+    button.logout-btn { background: #e74c3c; margin-top: 20px; }
+    .hidden { display: none; }
+    
+    /* Teacher & Table Styles */
+    #live-clock { text-align: center; font-size: 1.2em; font-weight: bold; margin-bottom: 20px; color: #e74c3c; }
+    .student-row { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #eee; }
+    .student-row input[type="checkbox"] { width: auto; margin-right: 15px; transform: scale(1.5); cursor: pointer;}
+    
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+    th { background-color: #f8f9fa; }
+    .admin-card { border: 1px solid #ccc; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  
+  <!-- MAIN NAVIGATION -->
+  <div id="landing-section">
+    <h2>Branch Portal</h2>
+    <button onclick="showSection('login-section')">Staff Login</button>
+    <button class="alt-btn" onclick="showSection('student-portal')">Open Student Portal</button>
+  </div>
+
+  <!-- LOGIN SECTION -->
+  <div id="login-section" class="hidden">
+    <h2>Staff Login</h2>
+    <div class="form-group"><label>Role</label><select id="role"><option value="teacher">Teacher</option><option value="admin">Admin</option></select></div>
+    <div class="form-group"><label>User ID</label><input type="text" id="username"></div>
+    <div class="form-group"><label>Password</label><input type="password" id="password"></div>
+    <button id="login-btn" onclick="attemptLogin()">Login</button>
+    <button class="alt-btn" onclick="location.reload()">Back</button>
+    <p id="login-msg" style="color:red; text-align:center;"></p>
+  </div>
+
+  <!-- STUDENT PORTAL SECTION -->
+  <div id="student-portal" class="hidden">
+    <h2>Student Attendance Check</h2>
+    <div class="form-group"><label>Enter Roll Number</label><input type="text" id="stu-roll"></div>
+    <button onclick="fetchStudentData()" id="stu-btn">Check Records</button>
+    <button class="alt-btn" onclick="location.reload()">Back</button>
+    <p id="stu-msg" style="color:red; text-align:center;"></p>
+    <div id="stu-results"></div>
+  </div>
+
+  <!-- TEACHER SECTION -->
+  <div id="teacher-section" class="hidden">
+    <h2>Mark Attendance</h2>
+    <div id="live-clock"></div>
+    <p><strong>Subject:</strong> <span id="teacher-subject"></span></p>
+    <div id="student-list"></div>
+    <button id="submit-btn" onclick="submitAttendance()">Submit Attendance</button>
+    <p id="teacher-msg" style="text-align:center; font-weight:bold;"></p>
+    <button class="logout-btn" onclick="location.reload()">Log Out</button>
+  </div>
+
+  <!-- ADMIN SECTION -->
+  <div id="admin-section" class="hidden">
+    <h2>Admin Dashboard</h2>
+    
+    <div class="admin-card">
+      <h3>Add New Teacher</h3>
+      <input type="text" id="t-id" placeholder="Teacher ID (e.g. T2)">
+      <input type="text" id="t-pass" placeholder="Password">
+      <input type="email" id="t-email" placeholder="Email Address">
+      <input type="text" id="t-sub" placeholder="Subject Name">
+      <input type="text" id="t-sheet" placeholder="Sheet/Class Name (e.g. Teacher 2)">
+      <button onclick="addTeacher()">Add Teacher & Create Tab</button>
+    </div>
+
+    <div class="admin-card">
+      <h3>Enroll Student</h3>
+      <select id="s-class"><option>Loading classes...</option></select>
+      <input type="text" id="s-roll" placeholder="Roll Number">
+      <input type="text" id="s-name" placeholder="Full Name">
+      <input type="email" id="s-email" placeholder="Email Address">
+      <button onclick="addStudent()">Add Student to Class</button>
+    </div>
+    
+    <button class="logout-btn" onclick="location.reload()">Log Out</button>
+  </div>
+
+</div>
+
+<script>
+  // ==========================================
+  // PASTE YOUR DEPLOYED WEB APP URL BELOW
+  // ==========================================
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzqAYnyOV9ivOEHnR5eMjSp_IWQuFeTXkJ5UPPq9DexyH2H2zivSYTc7CTiOVF_V-FR/exec";
+  
+  let currentTeacher = {};
+  let allStudents = [];
+
+  setInterval(() => {
+    let clock = document.getElementById('live-clock');
+    if(clock) clock.innerText = new Date().toLocaleString();
+  }, 1000);
+
+  function showSection(id) {
+    document.querySelectorAll('.container > div').forEach(div => div.classList.add('hidden'));
+    document.getElementById(id).classList.remove('hidden');
+  }
+
+  async function callAppsScript(payload) {
+    try {
+      const response = await fetch(WEB_APP_URL, { 
+        method: 'POST', 
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
+        body: JSON.stringify(payload) 
+      });
+      return await response.json();
+    } catch (e) { 
+      return { success: false, message: "Network error." }; 
+    }
+  }
+
+  // --- LOGIN ---
+  async function attemptLogin() {
+    const role = document.getElementById('role').value;
+    const btn = document.getElementById('login-btn');
+    btn.disabled = true;
+    document.getElementById('login-msg').innerText = "Authenticating...";
+    
+    const res = await callAppsScript({ 
+      action: 'login', 
+      role: role, 
+      username: document.getElementById('username').value, 
+      password: document.getElementById('password').value 
+    });
+    
+    btn.disabled = false;
+    
+    if (res.success) {
+      if (res.role === 'teacher') {
+        currentTeacher = res;
+        document.getElementById('teacher-subject').innerText = res.subject;
+        showSection('teacher-section');
+        loadTeacherDashboard();
+      } else {
+        showSection('admin-section');
+        loadAdminDashboard();
+      }
+    } else {
+      document.getElementById('login-msg').innerText = res.message;
+    }
+  }
+
+  // --- STUDENT PORTAL ---
+  async function fetchStudentData() {
+    const rollNo = document.getElementById('stu-roll').value;
+    if(!rollNo) return;
+    const btn = document.getElementById('stu-btn');
+    btn.disabled = true;
+    document.getElementById('stu-msg').innerText = "Fetching records...";
+    document.getElementById('stu-results').innerHTML = "";
+    
+    const res = await callAppsScript({ action: 'checkStudentAttendance', rollNo: rollNo });
+    btn.disabled = false;
+    
+    if(res.success) {
+      document.getElementById('stu-msg').innerText = "";
+      let html = `<table><tr><th>Subject</th><th>Classes</th><th>Present</th><th>Percentage</th></tr>`;
+      res.records.forEach(r => {
+        let color = r.percentage < 75 ? "color:red; font-weight:bold;" : "color:green;";
+        html += `<tr><td>${r.subject}</td><td>${r.total}</td><td>${r.present}</td><td style="${color}">${r.percentage}%</td></tr>`;
+      });
+      html += `</table>`;
+      document.getElementById('stu-results').innerHTML = html;
+    } else {
+      document.getElementById('stu-msg').innerText = res.message;
+    }
+  }
+
+  // --- TEACHER ---
+  async function loadTeacherDashboard() {
+    const res = await callAppsScript({ action: 'getStudents', sheetName: currentTeacher.sheetName });
+    if (res.success) {
+      allStudents = res.students;
+      let html = "";
+      allStudents.forEach((s, i) => html += `
+        <div class="student-row">
+          <input type="checkbox" id="chk-${i}" checked>
+          <div class="student-info"><strong>${s.name}</strong> (Roll: ${s.roll})</div>
+        </div>`);
+      document.getElementById('student-list').innerHTML = html;
+    }
+  }
+
+  async function submitAttendance() {
+    let data = allStudents.map((s, i) => ({ 
+      rowIdx: s.rowIdx, 
+      roll: s.roll, 
+      name: s.name, 
+      email: s.email, 
+      present: document.getElementById(`chk-${i}`).checked 
+    }));
+    
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    document.getElementById('teacher-msg').innerText = "Logging attendance...";
+    
+    const res = await callAppsScript({ 
+      action: 'submitAttendance', 
+      sheetName: currentTeacher.sheetName, 
+      subject: currentTeacher.subject, 
+      teacherEmail: currentTeacher.email, 
+      attendanceData: data 
+    });
+    
+    if (res.success) {
+      document.getElementById('student-list').innerHTML = "";
+      btn.style.display = "none";
+      document.getElementById('teacher-msg').innerHTML = "<span style='color:green'>Success! Emails sent.</span>";
+    } else {
+      btn.disabled = false;
+      document.getElementById('teacher-msg').innerText = "Error: " + res.message;
+    }
+  }
+
+  // --- ADMIN ---
+  async function loadAdminDashboard() {
+    const res = await callAppsScript({ action: 'getTeacherList' });
+    if(res.success) {
+      let opts = `<option value="">Select Class...</option>`;
+      res.teachers.forEach(t => opts += `<option value="${t.sheetName}">${t.subject} (${t.sheetName})</option>`);
+      document.getElementById('s-class').innerHTML = opts;
+    }
+  }
+
+  async function addTeacher() {
+    const payload = { 
+      action: 'addTeacher', 
+      teacherId: document.getElementById('t-id').value, 
+      password: document.getElementById('t-pass').value, 
+      email: document.getElementById('t-email').value, 
+      subject: document.getElementById('t-sub').value, 
+      sheetName: document.getElementById('t-sheet').value 
+    };
+    
+    if(!payload.teacherId || !payload.sheetName) return alert("Fill in required fields!");
+    
+    const res = await callAppsScript(payload);
+    alert(res.success ? "Teacher Added & Sheet Created!" : "Error: " + res.message);
+    if(res.success) {
+      document.getElementById('t-id').value = '';
+      document.getElementById('t-pass').value = '';
+      document.getElementById('t-email').value = '';
+      document.getElementById('t-sub').value = '';
+      document.getElementById('t-sheet').value = '';
+      loadAdminDashboard();
+    }
+  }
+
+  async function addStudent() {
+    const payload = { 
+      action: 'addStudent', 
+      sheetName: document.getElementById('s-class').value, 
+      roll: document.getElementById('s-roll').value, 
+      name: document.getElementById('s-name').value, 
+      email: document.getElementById('s-email').value 
+    };
+    
+    if(!payload.sheetName || !payload.roll || !payload.name) return alert("Fill in required fields!");
+    
+    const res = await callAppsScript(payload);
+    alert(res.success ? "Student Enrolled!" : "Error: " + res.message);
+    if(res.success) {
+      document.getElementById('s-roll').value = '';
+      document.getElementById('s-name').value = '';
+      document.getElementById('s-email').value = '';
+    }
+  }
+</script>
+</body>
+</html>
