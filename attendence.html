@@ -2,30 +2,54 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <!-- Crucial tag for mobile scaling -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Branch Attendance Portal</title>
   <style>
-    body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f4f7f6; color: #333; margin: 0; padding: 20px; }
-    .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-    h2, h3 { text-align: center; color: #2c3e50; }
-    .form-group { margin-bottom: 15px; }
-    input, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-    button { width: 100%; padding: 10px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; margin-top: 10px;}
-    button:hover { background: #2980b9; }
+    /* CSS RESETS & MOBILE BASICS */
+    * { box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f4f7f6; color: #333; margin: 0; padding: 10px; }
+    
+    /* RESPONSIVE CONTAINER */
+    .container { width: 100%; max-width: 600px; margin: 0 auto; background: white; padding: 25px 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+    h2, h3 { text-align: center; color: #2c3e50; margin-top: 0; }
+    
+    /* MOBILE-FRIENDLY FORMS (16px font prevents iOS zoom) */
+    .form-group { margin-bottom: 20px; }
+    label { font-size: 14px; font-weight: 600; color: #555; display: block; margin-bottom: 5px; }
+    input, select { width: 100%; padding: 14px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; background: #fafafa; }
+    input:focus, select:focus { outline: none; border-color: #3498db; background: #fff; }
+    
+    /* THUMB-FRIENDLY BUTTONS */
+    button { width: 100%; padding: 15px; background: #3498db; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; margin-top: 10px; transition: 0.2s; }
+    button:active { transform: scale(0.98); }
     button:disabled { background: #95a5a6; cursor: not-allowed; }
-    button.alt-btn { background: #2ecc71; margin-top: 20px; }
-    button.alt-btn:hover { background: #27ae60; }
-    button.logout-btn { background: #e74c3c; margin-top: 20px; }
+    button.alt-btn { background: #2ecc71; margin-top: 15px; }
+    button.logout-btn { background: #e74c3c; margin-top: 25px; }
+    
     .hidden { display: none; }
     
-    /* Teacher & Table Styles */
-    #live-clock { text-align: center; font-size: 1.2em; font-weight: bold; margin-bottom: 20px; color: #e74c3c; }
-    .student-row { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #eee; }
-    .student-row input[type="checkbox"] { width: auto; margin-right: 15px; transform: scale(1.5); cursor: pointer;}
+    /* TEACHER DASHBOARD - BIGGER TOUCH TARGETS */
+    #live-clock { text-align: center; font-size: 1.2em; font-weight: bold; margin-bottom: 20px; color: #e74c3c; background: #ffeaea; padding: 10px; border-radius: 8px; }
+    .student-row { display: flex; align-items: center; padding: 15px 10px; border-bottom: 1px solid #eee; }
+    .student-row:last-child { border-bottom: none; margin-bottom: 15px; }
+    .student-row input[type="checkbox"] { width: 24px; height: 24px; margin-right: 15px; accent-color: #3498db; }
+    .student-info { flex-grow: 1; font-size: 16px; }
     
-    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-    th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
-    th { background-color: #f8f9fa; }
-    .admin-card { border: 1px solid #ccc; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+    /* RESPONSIVE TABLE WRAPPER (Swipe to scroll) */
+    .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 8px; border: 1px solid #eee; margin-top: 15px; }
+    table { width: 100%; border-collapse: collapse; min-width: 400px; /* Forces scrolling if screen is too narrow */ }
+    th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; font-size: 14px; }
+    th { background-color: #f8f9fa; font-weight: 600; color: #333; white-space: nowrap; }
+    
+    .admin-card { border: 1px solid #e0e0e0; padding: 20px; border-radius: 8px; margin-bottom: 20px; background: #fdfdfd; }
+    .admin-card input { margin-bottom: 15px; }
+    
+    /* Small screen padding adjustments */
+    @media (max-width: 480px) {
+      .container { padding: 20px 15px; }
+      button { padding: 14px; }
+    }
   </style>
 </head>
 <body>
@@ -35,39 +59,54 @@
   <!-- MAIN NAVIGATION -->
   <div id="landing-section">
     <h2>Branch Portal</h2>
+    <p style="text-align: center; color: #666; margin-bottom: 30px;">Select your portal access below</p>
     <button onclick="showSection('login-section')">Staff Login</button>
-    <button class="alt-btn" onclick="showSection('student-portal')">Open Student Portal</button>
+    <button class="alt-btn" onclick="showSection('student-portal')">Student Portal</button>
   </div>
 
   <!-- LOGIN SECTION -->
   <div id="login-section" class="hidden">
     <h2>Staff Login</h2>
-    <div class="form-group"><label>Role</label><select id="role"><option value="teacher">Teacher</option><option value="admin">Admin</option></select></div>
-    <div class="form-group"><label>User ID</label><input type="text" id="username"></div>
-    <div class="form-group"><label>Password</label><input type="password" id="password"></div>
-    <button id="login-btn" onclick="attemptLogin()">Login</button>
-    <button class="alt-btn" onclick="location.reload()">Back</button>
-    <p id="login-msg" style="color:red; text-align:center;"></p>
+    <div class="form-group">
+      <label>Role</label>
+      <select id="role"><option value="teacher">Teacher</option><option value="admin">Admin</option></select>
+    </div>
+    <div class="form-group">
+      <label>User ID</label>
+      <input type="text" id="username" placeholder="e.g. admin or T1">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="password" placeholder="Enter your password">
+    </div>
+    <button id="login-btn" onclick="attemptLogin()">Login Securely</button>
+    <button class="alt-btn" style="background: #95a5a6;" onclick="location.reload()">Back to Home</button>
+    <p id="login-msg" style="color:red; text-align:center; font-weight: 500; margin-top: 15px;"></p>
   </div>
 
   <!-- STUDENT PORTAL SECTION -->
   <div id="student-portal" class="hidden">
-    <h2>Student Attendance Check</h2>
-    <div class="form-group"><label>Enter Roll Number</label><input type="text" id="stu-roll"></div>
-    <button onclick="fetchStudentData()" id="stu-btn">Check Records</button>
-    <button class="alt-btn" onclick="location.reload()">Back</button>
-    <p id="stu-msg" style="color:red; text-align:center;"></p>
+    <h2>Attendance Check</h2>
+    <div class="form-group">
+      <label>Enter Roll Number</label>
+      <input type="text" id="stu-roll" placeholder="e.g. 101" inputmode="numeric">
+    </div>
+    <button onclick="fetchStudentData()" id="stu-btn">Check My Records</button>
+    <button class="alt-btn" style="background: #95a5a6;" onclick="location.reload()">Back to Home</button>
+    <p id="stu-msg" style="color:red; text-align:center; font-weight: 500; margin-top: 15px;"></p>
     <div id="stu-results"></div>
   </div>
 
   <!-- TEACHER SECTION -->
   <div id="teacher-section" class="hidden">
-    <h2>Mark Attendance</h2>
+    <h2>Class Attendance</h2>
     <div id="live-clock"></div>
-    <p><strong>Subject:</strong> <span id="teacher-subject"></span></p>
-    <div id="student-list"></div>
+    <p style="background:#e8f4f8; padding:10px; border-radius:8px; font-size:15px;"><strong>Subject:</strong> <span id="teacher-subject"></span></p>
+    
+    <div id="student-list" style="margin-top: 20px;"></div>
+    
     <button id="submit-btn" onclick="submitAttendance()">Submit Attendance</button>
-    <p id="teacher-msg" style="text-align:center; font-weight:bold;"></p>
+    <p id="teacher-msg" style="text-align:center; font-weight:bold; margin-top: 15px;"></p>
     <button class="logout-btn" onclick="location.reload()">Log Out</button>
   </div>
 
@@ -82,16 +121,16 @@
       <input type="email" id="t-email" placeholder="Email Address">
       <input type="text" id="t-sub" placeholder="Subject Name">
       <input type="text" id="t-sheet" placeholder="Sheet/Class Name (e.g. Teacher 2)">
-      <button onclick="addTeacher()">Add Teacher & Create Tab</button>
+      <button onclick="addTeacher()">Add & Create Tab</button>
     </div>
 
     <div class="admin-card">
       <h3>Enroll Student</h3>
       <select id="s-class"><option>Loading classes...</option></select>
-      <input type="text" id="s-roll" placeholder="Roll Number">
+      <input type="text" id="s-roll" placeholder="Roll Number" inputmode="numeric">
       <input type="text" id="s-name" placeholder="Full Name">
       <input type="email" id="s-email" placeholder="Email Address">
-      <button onclick="addStudent()">Add Student to Class</button>
+      <button onclick="addStudent()">Add to Class</button>
     </div>
     
     <button class="logout-btn" onclick="location.reload()">Log Out</button>
@@ -110,12 +149,13 @@
 
   setInterval(() => {
     let clock = document.getElementById('live-clock');
-    if(clock) clock.innerText = new Date().toLocaleString();
+    if(clock) clock.innerText = new Date().toLocaleString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
   }, 1000);
 
   function showSection(id) {
     document.querySelectorAll('.container > div').forEach(div => div.classList.add('hidden'));
     document.getElementById(id).classList.remove('hidden');
+    window.scrollTo(0, 0); // Scroll to top when changing views on mobile
   }
 
   async function callAppsScript(payload) {
@@ -127,7 +167,7 @@
       });
       return await response.json();
     } catch (e) { 
-      return { success: false, message: "Network error." }; 
+      return { success: false, message: "Network error. Check connection." }; 
     }
   }
 
@@ -136,6 +176,7 @@
     const role = document.getElementById('role').value;
     const btn = document.getElementById('login-btn');
     btn.disabled = true;
+    document.getElementById('login-msg').style.color = "#333";
     document.getElementById('login-msg').innerText = "Authenticating...";
     
     const res = await callAppsScript({ 
@@ -158,6 +199,7 @@
         loadAdminDashboard();
       }
     } else {
+      document.getElementById('login-msg').style.color = "red";
       document.getElementById('login-msg').innerText = res.message;
     }
   }
@@ -168,6 +210,7 @@
     if(!rollNo) return;
     const btn = document.getElementById('stu-btn');
     btn.disabled = true;
+    document.getElementById('stu-msg').style.color = "#333";
     document.getElementById('stu-msg').innerText = "Fetching records...";
     document.getElementById('stu-results').innerHTML = "";
     
@@ -176,20 +219,23 @@
     
     if(res.success) {
       document.getElementById('stu-msg').innerText = "";
-      let html = `<table><tr><th>Subject</th><th>Classes</th><th>Present</th><th>Percentage</th></tr>`;
+      // Added .table-responsive wrapper to allow horizontal swipe on mobile
+      let html = `<div class="table-responsive"><table><tr><th>Subject</th><th>Classes</th><th>Present</th><th>%</th></tr>`;
       res.records.forEach(r => {
-        let color = r.percentage < 75 ? "color:red; font-weight:bold;" : "color:green;";
+        let color = r.percentage < 75 ? "color:#e74c3c; font-weight:bold;" : "color:#2ecc71; font-weight:bold;";
         html += `<tr><td>${r.subject}</td><td>${r.total}</td><td>${r.present}</td><td style="${color}">${r.percentage}%</td></tr>`;
       });
-      html += `</table>`;
+      html += `</table></div>`;
       document.getElementById('stu-results').innerHTML = html;
     } else {
+      document.getElementById('stu-msg').style.color = "red";
       document.getElementById('stu-msg').innerText = res.message;
     }
   }
 
   // --- TEACHER ---
   async function loadTeacherDashboard() {
+    document.getElementById('student-list').innerHTML = "<p style='text-align:center;'>Loading student list...</p>";
     const res = await callAppsScript({ action: 'getStudents', sheetName: currentTeacher.sheetName });
     if (res.success) {
       allStudents = res.students;
@@ -197,9 +243,11 @@
       allStudents.forEach((s, i) => html += `
         <div class="student-row">
           <input type="checkbox" id="chk-${i}" checked>
-          <div class="student-info"><strong>${s.name}</strong> (Roll: ${s.roll})</div>
+          <div class="student-info"><strong>${s.name}</strong><br><small style="color:#777;">Roll: ${s.roll}</small></div>
         </div>`);
       document.getElementById('student-list').innerHTML = html;
+    } else {
+      document.getElementById('student-list').innerHTML = `<p style="color:red;">Error: ${res.message}</p>`;
     }
   }
 
@@ -214,7 +262,8 @@
     
     const btn = document.getElementById('submit-btn');
     btn.disabled = true;
-    document.getElementById('teacher-msg').innerText = "Logging attendance...";
+    document.getElementById('teacher-msg').style.color = "#333";
+    document.getElementById('teacher-msg').innerText = "Logging attendance safely...";
     
     const res = await callAppsScript({ 
       action: 'submitAttendance', 
@@ -227,9 +276,10 @@
     if (res.success) {
       document.getElementById('student-list').innerHTML = "";
       btn.style.display = "none";
-      document.getElementById('teacher-msg').innerHTML = "<span style='color:green'>Success! Emails sent.</span>";
+      document.getElementById('teacher-msg').innerHTML = "<span style='color:#2ecc71; font-size: 1.1em;'>Success! Logs saved & emails sent.</span>";
     } else {
       btn.disabled = false;
+      document.getElementById('teacher-msg').style.color = "red";
       document.getElementById('teacher-msg').innerText = "Error: " + res.message;
     }
   }
@@ -238,7 +288,7 @@
   async function loadAdminDashboard() {
     const res = await callAppsScript({ action: 'getTeacherList' });
     if(res.success) {
-      let opts = `<option value="">Select Class...</option>`;
+      let opts = `<option value="">Select Class / Teacher Tab...</option>`;
       res.teachers.forEach(t => opts += `<option value="${t.sheetName}">${t.subject} (${t.sheetName})</option>`);
       document.getElementById('s-class').innerHTML = opts;
     }
@@ -259,11 +309,7 @@
     const res = await callAppsScript(payload);
     alert(res.success ? "Teacher Added & Sheet Created!" : "Error: " + res.message);
     if(res.success) {
-      document.getElementById('t-id').value = '';
-      document.getElementById('t-pass').value = '';
-      document.getElementById('t-email').value = '';
-      document.getElementById('t-sub').value = '';
-      document.getElementById('t-sheet').value = '';
+      ['t-id', 't-pass', 't-email', 't-sub', 't-sheet'].forEach(id => document.getElementById(id).value = '');
       loadAdminDashboard();
     }
   }
@@ -282,9 +328,7 @@
     const res = await callAppsScript(payload);
     alert(res.success ? "Student Enrolled!" : "Error: " + res.message);
     if(res.success) {
-      document.getElementById('s-roll').value = '';
-      document.getElementById('s-name').value = '';
-      document.getElementById('s-email').value = '';
+      ['s-roll', 's-name', 's-email'].forEach(id => document.getElementById(id).value = '');
     }
   }
 </script>
